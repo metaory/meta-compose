@@ -20,9 +20,6 @@ app.use(async function(ctx, next) {
 
 router
   .get('/', async (ctx) => {
-    // const [[version]] = await database.raw('show tables')
-    // ctx.body = version
-    // console.log(z)
     ctx.body = { ok: true, message: 'Alive and breathing...'}
   })
   .get('/version', async (ctx) => {
@@ -35,6 +32,7 @@ router
     ctx.body = 'post::videos'
   })
   .get('/videos', async (ctx) => {
+    console.log()
     const list = await database.select().table('videos')
     console.log('>>', list)
     ctx.body = list

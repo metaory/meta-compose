@@ -1,11 +1,8 @@
 const knex = require('knex')
-const http = require("http")
-const https = require("https")
 const axios = require("axios")
 const { database } = require('./config')
-const Chance = require('chance')
-
-const chance = new Chance()
+const chance = new (require('chance'))
+const length = 10
 
 const db = module.exports = knex({
   client: 'mysql2',
@@ -37,7 +34,7 @@ async function populate() {
     table.integer('timesViewed').defaultTo(0)
   })
   // Array.from({ length: 20 }).map(async () => {
-  for (const item of Array.from({ length: 20 })) {
+  for (const item of Array.from({ length })) {
     const thumbnailUrl = await getRandomImagePath()
     await db('videos').insert({
       name: chance.name(),

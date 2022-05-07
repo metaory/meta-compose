@@ -9,7 +9,7 @@ import Table from './components/Table.vue'
 <style>
 body {
   color: #213040;
-  background: #18222d;
+  background: #161a22;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
