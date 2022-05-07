@@ -20,7 +20,7 @@ app.use(async function(ctx, next) {
 
 router
   .get('/', async (ctx) => {
-    ctx.body = { ok: true, message: 'Alive and breathing...'}
+    ctx.body = { ok: true, message: 'Alive and breathing...' }
   })
   .get('/version', async (ctx) => {
     const [[version]] = await database.raw('select VERSION() version')
@@ -32,10 +32,18 @@ router
     ctx.body = 'post::videos'
   })
   .get('/videos', async (ctx) => {
-    console.log()
-    const list = await database.select().table('videos')
-    console.log('>>', list)
-    ctx.body = list
+    const { query: { page = 1, per_page = 10, min_views = 0 } } = ctx
+    const offset = (page - 1) * per_page
+    const [count] = await database.table('videos').count()
+    const total = count['count(*)']
+
+    const list = await database.select()
+      .table('videos')
+      .where('timesViewed', '>=', min_views)
+      .limit(per_page)
+      .offset(offset)
+
+    ctx.body = { total, list }
   })
   .get('/videos/:id', (ctx) => {
     console.log('params', ctx.params.id)
