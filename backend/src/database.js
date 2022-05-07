@@ -23,6 +23,9 @@ async function getRandomImagePath() {
 }
 
 async function populate() {
+  console.log('Populating in 3s...')
+  await sleep(3000)
+
   const exists = await db.schema.hasTable('videos')
   if (exists) await db.schema.dropTable('videos')
 
