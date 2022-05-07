@@ -26,7 +26,7 @@ async function populate() {
   const exists = await db.schema.hasTable('videos')
   if (exists) await db.schema.dropTable('videos')
 
-  await db.schema.createTable('videos', (table) => {
+  await db.schema.withSchema('example').createTable('videos', (table) => {
     table.increments()
     table.string('name')
     table.string('thumbnailUrl').defaultTo('NA')
