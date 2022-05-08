@@ -45,15 +45,32 @@ router
 
     ctx.body = { total, list }
   })
-  .get('/videos/:id', (ctx) => {
-    console.log('params', ctx.params.id)
-    ctx.body = 'get::videos::' + ctx.params.id
+  .get('/videos/:id', async (ctx) => {
+    const [row] = await database.select()
+      .table('videos')
+      .where('id', ctx.params.id)
+    ctx.body = row
   })
   .put('/videos/:id', (ctx) => {
+    knex('books')
+      .where('published_date', '<', 2000)
+      .update({
+        status: 'archived',
+        thisKeyIsSkipped: undefined
+      })
+
     ctx.body = 'put::videos::' + ctx.params.id
   })
-  .del('/videos/:id', (ctx) => {
-    ctx.body = 'put::videos::' + ctx.params.id
+  .del('/videos/:id', async (ctx) => {
+    const row = await database.select()
+      .table('videos')
+      .where('id', ctx.params.id)
+      .del()
+    //   knex('videos')
+    //     .where('activated', false)
+    //     .del()
+
+      ctx.body = row
   })
 
 app
