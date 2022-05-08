@@ -1,13 +1,20 @@
 const Koa = require('koa')
 const Router = require('@koa/router')
+const Joi = require('joi')
+const bodyParser = require('koa-bodyparser')
 
 const database = require("./database")
 const { port } = require("./config")
 
-const sleep = (s = 1) => new Promise(resolve => setTimeout(resolve, s * 1000))
+const schema = Joi.object({
+  name: Joi.string().min(3).max(20).required(),
+  url: Joi.string().uri().required(),
+  thumbnailUrl: Joi.string().uri().required(),
+  isPrivate: Joi.boolean().required(),
+  timesViewed: Joi.number().integer().valid(0).required(),
+})
 
 const app = new Koa()
-const bodyParser = require('koa-bodyparser')
 const server = app.listen(port)
 const router = new Router()
 
@@ -15,10 +22,18 @@ app.use(bodyParser())
 
 app.use(async function(ctx, next) {
   const start = Date.now()
-  await next()
-  const ms = Date.now() - start
-  ctx.set('X-Response-Time', `${ms}ms`)
-  console.log('%s %s - %sms', ctx.method, ctx.url, ms)
+  try {
+    await next()
+  } catch (error) {
+    console.error(error)
+    ctx.body = error.message
+    ctx.status = 500
+  }
+  finally {
+    const ms = Date.now() - start
+    ctx.set('X-Response-Time', `${ms}ms`)
+    console.log('%s %s - %sms', ctx.method, ctx.url, ms)
+  }
 })
 
 router
@@ -32,10 +47,14 @@ router
 
 router
   .post('/videos', async (ctx) => {
-    ctx.body = await database('videos').insert(ctx.request.body)
+    console.log('-------------------------------------')
+    const { error, value } = await schema.validate(ctx.request.body)
+    if (error) throw error
+    ctx.body = await database('videos').insert(value)
   })
+
   .get('/videos', async (ctx) => {
-    const { query: { page = 1, per_page = 10, min_views = 0, public } } = ctx
+    const { query: { page = 1, per_page = 10, min_views = 0, is_private } } = ctx
     const offset = (page - 1) * per_page
     const [count] = await database.table('videos').count()
     const total = count['count(*)']
@@ -44,11 +63,12 @@ router
       .table('videos')
       .where('timesViewed', '>=', min_views)
 
-    if (public) query = query.where('isPrivate', 0)
+    if (is_private != undefined) query = query.where('isPrivate', is_private)
 
     const list = await query
       .limit(per_page)
       .offset(offset)
+      .orderBy('id', 'desc')
 
     const { length } = list
 

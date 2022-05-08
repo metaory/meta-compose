@@ -17,23 +17,42 @@ const pagination = ref({
   sortBy: 'desc',
   descending: false,
   page: 1,
-  rowsPerPage: 10,
-  rowsNumber: 99
+  rowsPerPage: 1000,
+  rowsNumber: 0
 })
+
 const pagesNumber = computed(() => {
   return Math.ceil(rows.length / pagination.value.rowsPerPage)
 })
 
-
-const fetchVideos = async () => {
+import querystring from 'querystring'
+const sanatizeUrl = (url) => {
+  const parsed = querystring.parse(url.split('?')[1])
+  for (const key in parsed) { if (parsed[key] === 'null') delete parsed[key] }
+  return url.split('?')[0] + '?' + querystring.stringify(parsed)
+}
+const fetchVideos = async (minViews = 0, isPrivate) => {
   loading.value = true
-  const data = await fetch("/api/videos").then(res => res.json())
+  const { page, rowsPerPage } = pagination.value
+
+  const params = new URLSearchParams()
+  params.set('page', page)
+  params.set('per_page', rowsPerPage)
+  params.set('min_views', minViews)
+
+  if (isPrivate !== undefined) params.set('is_private', isPrivate)
+
+  const uri = `/api/videos?${params.toString()}`
+
+  const data = await fetch(uri)
+    .then(res => res.json())
+
   total.value = data.total
   rows.value = data.list
   loading.value = false
 }
+
 onMounted(() => {
-  console.log('ONMOUNTED')
   fetchVideos()
 })
 
@@ -62,9 +81,22 @@ function onRequest(props) {
       <template v-slot:top>
         <h4>Videos</h4>
         <q-space />
-        <q-btn push rounded color="primary" label="Fetch Public Videos" />
-        <q-btn push rounded class="q-mx-xl" color="primary" label="Fetch Popular Videos" />
-        <q-btn push round color="secondary" dark icon="refresh" />
+        <q-btn
+          @click="fetchVideos(0, 0)"
+          push
+          rounded
+          color="primary"
+          label="Fetch Public Videos ONLY"
+        />
+        <q-btn
+          @click="fetchVideos(50)"
+          push
+          rounded
+          class="q-mx-xl"
+          color="secondary"
+          label="Fetch Popular Videos ONLY"
+        />
+        <q-btn @click="fetchVideos(0)" push round color="accent" dark icon="refresh" />
       </template>
 
       <template v-slot:header="props">
@@ -89,7 +121,7 @@ function onRequest(props) {
               text-color="black"
               outline
               :color="props.row.isPrivate ? 'warning' : 'positive'"
-            >{{ props.row.isPrivate ? 'Private' : 'Public' }}</q-badge>
+            >{{ props.row.isPrivate ? 'Private' : 'Public' }} - {{ props.row.isPrivate }}</q-badge>
           </q-td>
           <q-td key="timesViewed" :props="props">
             <q-badge
