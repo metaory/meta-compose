@@ -39,6 +39,13 @@ const fetchVideos = async (minViews = 0, isPrivate) => {
   loading.value = false
 }
 
+const initialPagination = {
+  sortBy: 'desc',
+  descending: false,
+  page: 1,
+  rowsPerPage: 1000
+}
+
 onMounted(() => {
   fetchVideos()
 })
@@ -57,6 +64,7 @@ function onRequest(props) {
       color="cyan"
       dark
       row-key="id"
+      :pagination="initialPagination"
       :filter="filter"
       :rows="rows"
       :columns="columns"
@@ -135,7 +143,8 @@ html {
 .q-table__bottom > .q-table__control {
   display: none;
 }
-th, td {
+th,
+td {
   border-color: rgb(44, 47, 58) !important;
 }
 </style>
