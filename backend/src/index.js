@@ -48,7 +48,9 @@ router
       .limit(per_page)
       .offset(offset)
 
-    ctx.body = { total, list }
+    const { length } = list
+
+    ctx.body = { total, length, list }
   })
   .get('/videos/:id', async (ctx) => {
     const [row] = await database.select()
