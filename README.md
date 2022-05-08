@@ -12,7 +12,8 @@ docker-compose up
 [localhost:3000](http://localhost:3000)
 
 #### api at
-[localhost:3000](http://localhost)
+[localhost](http://localhost)
+[localhost/videos?page=1&per_page=1000&min_views=42](http://localhost/videos?page=1&per_page=1000&min_views=42)
 
 #### database at
 `localhost:3306`
