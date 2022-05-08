@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 const columns = [
   { name: 'id', label: 'ID', field: 'id', sortable: true },
   { name: 'name', label: 'Name', field: 'name', sortable: true },
@@ -13,6 +13,18 @@ const rows = ref([])
 const total = ref([])
 const filter = ref('')
 const loading = ref(true)
+const pagination = ref({
+  sortBy: 'desc',
+  descending: false,
+  page: 2,
+  rowsPerPage: 3,
+  rowsNumber: 99
+})
+const pagesNumber = computed(() => {
+  return Math.ceil(rows.length / pagination.value.rowsPerPage)
+})
+
+
 // const rows = await fetch('/api/videos').then((r) => r.json())
 loading.value = false
 
@@ -44,13 +56,14 @@ function onRequest(props) {
       :columns="columns"
       :loading="loading"
     >
-      <template v-slot:top-right>
-        <q-input borderless dark dense debounce="300" v-model="filter" placeholder="Search">
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
+      <template v-slot:top>
+        <h4>Videos</h4>
+        <q-space />
+        <q-btn push rounded color="primary" label="Fetch Public Videos" />
+        <q-btn push rounded class="q-mx-xl" color="primary" label="Fetch Popular Videos" />
+        <q-btn push round color="secondary" dark icon="refresh" />
       </template>
+
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th v-for="col in props.cols" :key="col.name" :props="props" class="text-cyan">
@@ -79,10 +92,54 @@ function onRequest(props) {
             <q-badge
               class="text-bold text-h6"
               text-color="white"
-              color="accent"
+              :color="props.row.timesViewed >= 50 ? 'positive' : 'negative'"
             >{{ props.row.timesViewed }}</q-badge>
           </q-td>
         </q-tr>
+      </template>
+
+      <template v-slot:pagination="scope">
+        <q-btn
+          v-if="scope.pagesNumber > 2"
+          icon="first_page"
+          color="accent"
+          round
+          dense
+          flat
+          :disable="scope.isFirstPage"
+          @click="scope.firstPage"
+        />
+
+        <q-btn
+          icon="chevron_left"
+          color="grey-8"
+          round
+          dense
+          flat
+          :disable="scope.isFirstPage"
+          @click="scope.prevPage"
+        />
+
+        <q-btn
+          icon="chevron_right"
+          color="grey-8"
+          round
+          dense
+          flat
+          :disable="scope.isLastPage"
+          @click="scope.nextPage"
+        />
+
+        <q-btn
+          v-if="scope.pagesNumber > 2"
+          icon="last_page"
+          color="grey-8"
+          round
+          dense
+          flat
+          :disable="scope.isLastPage"
+          @click="scope.lastPage"
+        />
       </template>
     </q-table>
   </div>

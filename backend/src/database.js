@@ -12,7 +12,7 @@ const db = module.exports = knex({
 const sleep = (ms = 1000) => new Promise(resolve => setTimeout(resolve, ms))
 
 async function getRandomImagePath() {
-  await sleep(100) // to avoid unsplash ratelimit
+  await sleep(10) // to avoid unsplash ratelimit
   const {
     request: { res: { responseUrl } }
   } = await axios.get("https://source.unsplash.com/random/128x128")
@@ -24,7 +24,8 @@ async function populate() {
   await sleep(6000)
 
   const exists = await db.schema.hasTable('videos')
-  if (exists) await db.schema.dropTable('videos')
+  if (exists) return
+  // if (exists) await db.schema.dropTable('videos')
 
   // await db.schema.createTable('videos', (table) => {
   await db.schema.withSchema('example').createTable('videos', (table) => {
@@ -35,8 +36,7 @@ async function populate() {
     table.boolean('isPrivate').defaultTo(false)
     table.integer('timesViewed').defaultTo(0)
   })
-  // Array.from({ length: 20 }).map(async () => {
-  for (const item of Array.from({ length })) {
+  for (const [i] of Array.from({ length }).entries()) {
     const thumbnailUrl = await getRandomImagePath()
     await db('videos').insert({
       name: chance.name(),
@@ -45,7 +45,7 @@ async function populate() {
       isPrivate: chance.bool(),
       timesViewed: chance.integer({ min: 0, max: 100 })
     })
-    console.log('Inserted row')
+    console.log('Inserted row', i)
   }
 }
 

@@ -29,17 +29,22 @@ router
 
 router
   .post('/videos', (ctx) => {
+    // TODO
     ctx.body = 'post::videos'
   })
   .get('/videos', async (ctx) => {
-    const { query: { page = 1, per_page = 10, min_views = 0 } } = ctx
+    const { query: { page = 1, per_page = 10, min_views = 0, public } } = ctx
     const offset = (page - 1) * per_page
     const [count] = await database.table('videos').count()
     const total = count['count(*)']
 
-    const list = await database.select()
+    let query = database.select()
       .table('videos')
       .where('timesViewed', '>=', min_views)
+
+    if (public) query = query.where('isPrivate', 0)
+
+    const list = await query
       .limit(per_page)
       .offset(offset)
 
@@ -52,6 +57,7 @@ router
     ctx.body = row
   })
   .put('/videos/:id', (ctx) => {
+    // TODO
     knex('books')
       .where('published_date', '<', 2000)
       .update({
@@ -62,15 +68,10 @@ router
     ctx.body = 'put::videos::' + ctx.params.id
   })
   .del('/videos/:id', async (ctx) => {
-    const row = await database.select()
+    ctx.body = await database.select()
       .table('videos')
       .where('id', ctx.params.id)
       .del()
-    //   knex('videos')
-    //     .where('activated', false)
-    //     .del()
-
-      ctx.body = row
   })
 
 app
