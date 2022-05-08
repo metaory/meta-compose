@@ -89,12 +89,12 @@ function onRequest(props) {
           label="Fetch Public Videos ONLY"
         />
         <q-btn
-          @click="fetchVideos(50)"
+          @click="fetchVideos(42)"
           push
           rounded
           class="q-mx-xl"
           color="secondary"
-          label="Fetch Popular Videos ONLY"
+          label="Fetch Popular Videos (42+)"
         />
         <q-btn @click="fetchVideos(0)" push round color="accent" dark icon="refresh" />
       </template>
@@ -127,7 +127,7 @@ function onRequest(props) {
             <q-badge
               class="text-bold text-h6"
               text-color="white"
-              :color="props.row.timesViewed >= 50 ? 'positive' : 'negative'"
+              :color="props.row.timesViewed >= 42 ? 'positive' : 'negative'"
             >{{ props.row.timesViewed }}</q-badge>
           </q-td>
         </q-tr>
