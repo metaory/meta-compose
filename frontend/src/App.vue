@@ -118,8 +118,8 @@ function onRequest(props) {
           <q-td key="timesViewed" :props="props">
             <q-badge
               class="text-bold text-h6"
-              text-color="white"
-              :color="props.row.timesViewed >= 42 ? 'positive' : 'negative'"
+              text-color="black"
+              :color="props.row.timesViewed >= 42 ? 'positive' : 'warning'"
             >{{ props.row.timesViewed }}</q-badge>
           </q-td>
         </q-tr>
