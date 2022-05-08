@@ -49,11 +49,6 @@ router
   })
 
 router
-  .post('/videos', async (ctx) => {
-    const { error, value } = await schema.validate(ctx.request.body)
-    if (error) throw error
-    ctx.body = await database('videos').insert(value)
-  })
   .get('/videos', async (ctx) => {
     const { query:
       { page = 1, per_page = 10, min_views = 0, is_private }
@@ -66,7 +61,7 @@ router
       .table('videos')
       .where('timesViewed', '>=', min_views)
 
-    if (is_private != undefined) query = query.where('isPrivate', is_private)
+    if (is_private !== undefined) query = query.where('isPrivate', is_private)
 
     const list = await query
       .limit(per_page)
@@ -77,11 +72,10 @@ router
 
     ctx.body = { total, length, list }
   })
-  .get('/videos/:id', async (ctx) => {
-    const [row] = await database.select()
-      .table('videos')
-      .where('id', ctx.params.id)
-    ctx.body = row
+  .post('/videos', async (ctx) => {
+    const { error, value } = await schema.validate(ctx.request.body)
+    if (error) throw error
+    ctx.body = await database('videos').insert(value)
   })
   .put('/videos/:id', async (ctx) => {
     const { error, value } = await schema.validate(ctx.request.body)
@@ -89,6 +83,12 @@ router
     ctx.body = await database('videos')
       .where('id', ctx.params.id)
       .update(value)
+  })
+  .get('/videos/:id', async (ctx) => {
+    const [row] = await database.select()
+      .table('videos')
+      .where('id', ctx.params.id)
+    ctx.body = row
   })
   .del('/videos/:id', async (ctx) => {
     ctx.body = await database.select()
