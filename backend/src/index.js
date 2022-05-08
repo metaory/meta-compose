@@ -36,10 +36,13 @@ app.use(async function(ctx, next) {
   }
 })
 
+const pulseHandler = async (ctx) => {
+  ctx.body = { ok: true, message: 'Alive and breathing...' }
+}
+
 router
-  .get('/', async (ctx) => {
-    ctx.body = { ok: true, message: 'Alive and breathing...' }
-  })
+  .get('/', pulseHandler)
+  .get('/pulse', pulseHandler)
   .get('/version', async (ctx) => {
     const [[version]] = await database.raw('select VERSION() version')
     ctx.body = { db: version }
@@ -47,14 +50,15 @@ router
 
 router
   .post('/videos', async (ctx) => {
-    console.log('-------------------------------------')
     const { error, value } = await schema.validate(ctx.request.body)
     if (error) throw error
     ctx.body = await database('videos').insert(value)
   })
 
   .get('/videos', async (ctx) => {
-    const { query: { page = 1, per_page = 10, min_views = 0, is_private } } = ctx
+    const { query:
+      { page = 1, per_page = 10, min_views = 0, is_private }
+    } = ctx
     const offset = (page - 1) * per_page
     const [count] = await database.table('videos').count()
     const total = count['count(*)']
@@ -81,9 +85,11 @@ router
     ctx.body = row
   })
   .put('/videos/:id', async (ctx) => {
+    const { error, value } = await schema.validate(ctx.request.body)
+    if (error) throw error
     ctx.body = await database('videos')
       .where('id', ctx.params.id)
-      .update(ctx.request.body)
+      .update(value)
   })
   .del('/videos/:id', async (ctx) => {
     ctx.body = await database.select()

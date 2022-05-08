@@ -121,7 +121,7 @@ function onRequest(props) {
               text-color="black"
               outline
               :color="props.row.isPrivate ? 'warning' : 'positive'"
-            >{{ props.row.isPrivate ? 'Private' : 'Public' }} - {{ props.row.isPrivate }}</q-badge>
+            >{{ props.row.isPrivate ? 'Private' : 'Public' }}</q-badge>
           </q-td>
           <q-td key="timesViewed" :props="props">
             <q-badge
