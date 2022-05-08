@@ -54,7 +54,6 @@ router
     if (error) throw error
     ctx.body = await database('videos').insert(value)
   })
-
   .get('/videos', async (ctx) => {
     const { query:
       { page = 1, per_page = 10, min_views = 0, is_private }

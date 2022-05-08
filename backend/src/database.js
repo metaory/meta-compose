@@ -22,6 +22,7 @@ async function getRandomImagePath() {
 async function populate() {
   const exists = await db.schema.hasTable('videos')
   if (exists) return
+  // uncomment to repopulate db on every run
   // if (exists) await db.schema.dropTable('videos')
 
   console.log('Populating in 6s...')
@@ -51,6 +52,4 @@ async function populate() {
 populate()
   .then(console.log)
   .catch(console.error)
-
-
 

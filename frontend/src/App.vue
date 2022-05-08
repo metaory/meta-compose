@@ -11,14 +11,8 @@ const columns = [
 
 const rows = ref([])
 const total = ref(0)
-const filter = ref('')
 const loading = ref(true)
 
-const sanatizeUrl = (url) => {
-  const parsed = querystring.parse(url.split('?')[1])
-  for (const key in parsed) { if (parsed[key] === 'null') delete parsed[key] }
-  return url.split('?')[0] + '?' + querystring.stringify(parsed)
-}
 const fetchVideos = async (minViews = 0, isPrivate) => {
   loading.value = true
 
@@ -49,23 +43,17 @@ const initialPagination = {
 onMounted(() => {
   fetchVideos()
 })
-
-function onRequest(props) {
-  console.log('@ON:REQUEST', props)
-}
 </script>
 
 <template>
   <h1>metaory</h1>
   <div class="q-ma-xl">
-    <!-- @request="onRequest" -->
     <q-table
       title="Videos"
       color="cyan"
       dark
       row-key="id"
       :pagination="initialPagination"
-      :filter="filter"
       :rows="rows"
       :columns="columns"
       :loading="loading"
