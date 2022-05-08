@@ -120,7 +120,7 @@ function onRequest(props) {
               class="text-bold text-h6"
               text-color="black"
               :color="props.row.timesViewed >= 42 ? 'positive' : 'warning'"
-            >{{ props.row.timesViewed }}</q-badge>
+            >{{ String( props.row.timesViewed).padStart(2, '0') }}</q-badge>
           </q-td>
         </q-tr>
       </template>
