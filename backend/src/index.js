@@ -60,16 +60,10 @@ router
       .where('id', ctx.params.id)
     ctx.body = row
   })
-  .put('/videos/:id', (ctx) => {
-    // TODO
-    knex('books')
-      .where('published_date', '<', 2000)
-      .update({
-        status: 'archived',
-        thisKeyIsSkipped: undefined
-      })
-
-    ctx.body = 'put::videos::' + ctx.params.id
+  .put('/videos/:id', async (ctx) => {
+    ctx.body = await database('videos')
+      .where('id', ctx.params.id)
+      .update(ctx.request.body)
   })
   .del('/videos/:id', async (ctx) => {
     ctx.body = await database.select()
