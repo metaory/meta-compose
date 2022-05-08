@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 const columns = [
   { name: 'id', label: 'ID', field: 'id', sortable: true },
   { name: 'name', label: 'Name', field: 'name', sortable: true },
@@ -10,14 +10,14 @@ const columns = [
 ]
 
 const rows = ref([])
-const total = ref([])
+const total = ref(0)
 const filter = ref('')
 const loading = ref(true)
 const pagination = ref({
   sortBy: 'desc',
   descending: false,
-  page: 2,
-  rowsPerPage: 3,
+  page: 1,
+  rowsPerPage: 10,
   rowsNumber: 99
 })
 const pagesNumber = computed(() => {
@@ -25,16 +25,18 @@ const pagesNumber = computed(() => {
 })
 
 
-// const rows = await fetch('/api/videos').then((r) => r.json())
-loading.value = false
+const fetchVideos = async () => {
+  loading.value = true
+  const data = await fetch("/api/videos").then(res => res.json())
+  total.value = data.total
+  rows.value = data.list
+  loading.value = false
+}
+onMounted(() => {
+  console.log('ONMOUNTED')
+  fetchVideos()
+})
 
-fetch("/api/videos")
-  .then(res => res.json())
-  .then(res => {
-    loading.value = false
-    rows.value = res.list
-    total.value = res.total
-  })
 function onRequest(props) {
   console.log('@ON:REQUEST', props)
 }
@@ -55,6 +57,7 @@ function onRequest(props) {
       :rows="rows"
       :columns="columns"
       :loading="loading"
+      :pagination="pagination"
     >
       <template v-slot:top>
         <h4>Videos</h4>
@@ -100,17 +103,6 @@ function onRequest(props) {
 
       <template v-slot:pagination="scope">
         <q-btn
-          v-if="scope.pagesNumber > 2"
-          icon="first_page"
-          color="accent"
-          round
-          dense
-          flat
-          :disable="scope.isFirstPage"
-          @click="scope.firstPage"
-        />
-
-        <q-btn
           icon="chevron_left"
           color="grey-8"
           round
@@ -129,21 +121,13 @@ function onRequest(props) {
           :disable="scope.isLastPage"
           @click="scope.nextPage"
         />
-
-        <q-btn
-          v-if="scope.pagesNumber > 2"
-          icon="last_page"
-          color="grey-8"
-          round
-          dense
-          flat
-          :disable="scope.isLastPage"
-          @click="scope.lastPage"
-        />
       </template>
     </q-table>
   </div>
 </template>
 
-<style scoped>
+<style>
+.q-table__bottom > .q-table__control:nth-child(2) {
+  display: none;
+}
 </style>
