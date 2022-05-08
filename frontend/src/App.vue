@@ -11,6 +11,7 @@ const columns = [
 
 const rows = ref([])
 const total = ref(0)
+const length = ref(0)
 const loading = ref(true)
 
 const fetchVideos = async (minViews = 0, isPrivate) => {
@@ -29,6 +30,7 @@ const fetchVideos = async (minViews = 0, isPrivate) => {
     .then(res => res.json())
 
   total.value = data.total
+  length.value = data.length
   rows.value = data.list
   loading.value = false
 }
@@ -52,6 +54,8 @@ onMounted(() => {
       title="Videos"
       color="cyan"
       dark
+      bordered
+      hide-bottom
       row-key="id"
       :pagination="initialPagination"
       :rows="rows"
@@ -59,6 +63,7 @@ onMounted(() => {
       :loading="loading"
     >
       <template v-slot:top>
+        <h5 class="text-blue-grey-4 q-mr-sm">{{ length }}</h5>
         <h4 class="text-blue-grey">Videos</h4>
         <q-space />
         <q-btn
@@ -88,7 +93,7 @@ onMounted(() => {
       </template>
 
       <template v-slot:body="props">
-        <q-tr :props="props">
+        <q-tr :props="props" class="text-blue-grey">
           <q-td key="id" :props="props">{{ props.row.id }}</q-td>
           <q-td key="name" :props="props">{{ props.row.name }}</q-td>
           <q-td key="url" :props="props">{{ props.row.url }}</q-td>
@@ -108,7 +113,7 @@ onMounted(() => {
               class="text-bold text-h6"
               text-color="black"
               :color="props.row.timesViewed >= 42 ? 'positive' : 'warning'"
-            >{{ String( props.row.timesViewed).padStart(2, '0') }}</q-badge>
+            >{{ String(props.row.timesViewed).padStart(2, '0') }}</q-badge>
           </q-td>
         </q-tr>
       </template>
@@ -128,11 +133,14 @@ html {
   text-align: center;
   margin-top: 60px;
 }
-.q-table__bottom > .q-table__control {
-  display: none;
-}
+.q-table--dark,
 th,
 td {
   border-color: rgb(44, 47, 58) !important;
+}
+h1 {
+  background: -webkit-linear-gradient(45deg, #0077b6, #e84171);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 </style>
