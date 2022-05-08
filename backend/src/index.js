@@ -7,8 +7,11 @@ const { port } = require("./config")
 const sleep = (s = 1) => new Promise(resolve => setTimeout(resolve, s * 1000))
 
 const app = new Koa()
+const bodyParser = require('koa-bodyparser')
 const server = app.listen(port)
 const router = new Router()
+
+app.use(bodyParser())
 
 app.use(async function(ctx, next) {
   const start = Date.now()
@@ -28,9 +31,8 @@ router
   })
 
 router
-  .post('/videos', (ctx) => {
-    // TODO
-    ctx.body = 'post::videos'
+  .post('/videos', async (ctx) => {
+    ctx.body = await database('videos').insert(ctx.request.body)
   })
   .get('/videos', async (ctx) => {
     const { query: { page = 1, per_page = 10, min_views = 0, public } } = ctx
