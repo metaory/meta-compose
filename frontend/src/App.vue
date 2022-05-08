@@ -68,6 +68,7 @@ onMounted(() => {
         <q-space />
         <q-btn
           @click="fetchVideos(0, 0)"
+          :loading="loading"
           push
           rounded
           color="primary"
@@ -75,13 +76,22 @@ onMounted(() => {
         />
         <q-btn
           @click="fetchVideos(42)"
+          :loading="loading"
           push
           rounded
           class="q-mx-xl"
           color="secondary"
           label="Fetch Popular Videos (42+)"
         />
-        <q-btn @click="fetchVideos(0)" push round color="accent" dark icon="refresh" />
+        <q-btn
+          @click="fetchVideos(0)"
+          :loading="loading"
+          push
+          round
+          color="accent"
+          dark
+          icon="refresh"
+        />
       </template>
 
       <template v-slot:header="props">
