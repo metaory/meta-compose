@@ -66,9 +66,13 @@ const deleteVideo = async (row, b) => {
   await fetchVideos()
 }
 const editVideo = async (row) => {
-  console.log('E>>', row)
   const newVideoName = await dialog('Enter new Name', row.name)
-  console.log('NEW NAME:::', newVideoName)
+  const updatedModel = {
+    ...row,
+    isPrivate: Boolean(row.isPrivate),
+    name: newVideoName,
+  }
+  delete updatedModel.id
 
   await fetch(`/api/videos/${row.id}`, {
     method: 'PUT',
@@ -76,10 +80,7 @@ const editVideo = async (row) => {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
-      ...row,
-      name: newVideoName,
-    })
+    body: JSON.stringify(updatedModel)
   })
 
   await fetchVideos()
