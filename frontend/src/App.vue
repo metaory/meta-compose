@@ -1,5 +1,9 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useQuasar } from 'quasar'
+
+const $q = useQuasar()
+
 const columns = [
   { name: 'id', label: 'ID', field: 'id', sortable: true },
   { name: 'name', label: 'Name', field: 'name', sortable: true },
@@ -34,8 +38,17 @@ const fetchVideos = async (minViews = 0, isPrivate) => {
   rows.value = data.list
   loading.value = false
 }
+const confirm = () => new Promise((resolve) => {
+  $q.dialog({
+    title: 'Confirm',
+    message: 'Are you sure?',
+    cancel: true,
+    persistent: true
+  }).onOk(resolve)
+})
 const deleteVideo = async (row, b) => {
   console.log('D>>', row, b)
+  await confirm()
   const res = await fetch(`/api/videos/${row.id}`, {
     method: 'DELETE',
   }).then(res => res.text()) // or res.json()
@@ -46,6 +59,19 @@ const editVideo = async (id) => {
   console.log('E>>', id)
 }
 const createVideo = async () => {
+  $q.dialog({
+    title: 'Prompt',
+    message: 'What is your name?',
+    prompt: {
+      model: '',
+      type: 'text' // optional
+    },
+    cancel: true,
+    persistent: true
+  }).onOk(data => {
+    console.log('>>>> OK, received', data)
+  })
+
   const formData = new FormData();
   formData.append('name', 'name');
   formData.append('url', 'url');
@@ -91,7 +117,7 @@ onMounted(() => {
         <h5 class="text-blue-grey-4 q-mr-sm">{{ length }}</h5>
         <h4 class="text-blue-grey">Videos</h4>
         <q-space />
-        <q-btn push disabled dark color="blue-grey" icon="add" class="q-mr-lg" />
+        <q-btn push @click="createVideo" dark color="positive" icon="add" class="q-mr-lg" />
         <q-btn
           @click="fetchVideos(0, 0)"
           :loading="loading"
@@ -154,8 +180,23 @@ onMounted(() => {
           </q-td>
           <q-td>
             <q-btn-group push>
-              <q-btn @click="editVideo(props.row)" push dark class="text-yellow" color="blue-grey-9" icon="edit" disabled />
-              <q-btn @click="deleteVideo(props.row)" push dark class="text-red" color="blue-grey-9" icon="delete" />
+              <q-btn
+                @click="editVideo(props.row)"
+                push
+                dark
+                class="text-yellow"
+                color="blue-grey-9"
+                icon="edit"
+                disabled
+              />
+              <q-btn
+                @click="deleteVideo(props.row)"
+                push
+                dark
+                class="text-red"
+                color="blue-grey-9"
+                icon="delete"
+              />
             </q-btn-group>
           </q-td>
         </q-tr>
