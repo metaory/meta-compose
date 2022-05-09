@@ -17,13 +17,23 @@ const rows = ref([])
 const total = ref(0)
 const length = ref(0)
 const loading = ref(true)
+const pagination = ref({
+  sortBy: 'desc',
+  descending: false,
+  page: 1,
+  rowsPerPage: 5,
+  rowsNumber: 0
+})
 
 const fetchVideos = async (minViews = 0, isPrivate) => {
+}
+const onRequest = async (props, minViews = 0, isPrivate) => {
+  const { page, rowsPerPage } = props.pagination
   loading.value = true
 
   const params = new URLSearchParams()
-  params.set('page', 1)
-  params.set('per_page', 1100)
+  params.set('page', page)
+  rowsPerPage && params.set('per_page', rowsPerPage)
   params.set('min_views', minViews)
 
   if (isPrivate !== undefined) params.set('is_private', isPrivate)
@@ -36,6 +46,9 @@ const fetchVideos = async (minViews = 0, isPrivate) => {
   total.value = data.total
   length.value = data.length
   rows.value = data.list
+  pagination.value.rowsNumber = data.total
+  pagination.value.page = page
+
   loading.value = false
 }
 const confirm = () => new Promise((resolve) => {
@@ -59,7 +72,7 @@ const dialog = (message, model = '') => new Promise((resolve) => {
 })
 const deleteVideo = async (row, b) => {
   await confirm()
-  const { ok, message} = await fetch(`/api/videos/${row.id}`, {
+  const { ok, message } = await fetch(`/api/videos/${row.id}`, {
     method: 'DELETE',
   }).then(res => res.json())
 
@@ -112,15 +125,10 @@ const createVideo = async () => {
 
   await fetchVideos()
 }
-const initialPagination = {
-  sortBy: 'desc',
-  descending: false,
-  page: 1,
-  rowsPerPage: 20
-}
-
 onMounted(() => {
-  fetchVideos()
+  // fetchVideos()
+  onRequest({ pagination: pagination.value })
+
 })
 </script>
 
@@ -133,7 +141,8 @@ onMounted(() => {
       dark
       bordered
       row-key="id"
-      :pagination="initialPagination"
+      @request="onRequest"
+      v-model:pagination="pagination"
       :rows="rows"
       :columns="columns"
       :loading="loading"
