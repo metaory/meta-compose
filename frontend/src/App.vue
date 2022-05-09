@@ -5,12 +5,12 @@ import { useQuasar } from 'quasar'
 const $q = useQuasar()
 
 const columns = [
-  { name: 'id', label: 'ID', field: 'id', sortable: true },
-  { name: 'name', label: 'Name', field: 'name', sortable: true },
+  { name: 'id', label: 'ID', field: 'id', sortable: false },
+  { name: 'name', label: 'Name', field: 'name', sortable: false },
   { name: 'url', label: 'Url', field: 'url', sortable: false },
   { name: 'thumbnailUrl', label: 'Thumbnail Url', field: 'thumbnailUrl', sortable: false },
-  { name: 'isPrivate', label: 'Private', field: 'isPrivate', sortable: true, },
-  { name: 'timesViewed', label: 'Times Viewed', field: 'timesViewed', sortable: true, },
+  { name: 'isPrivate', label: 'Private', field: 'isPrivate', sortable: false, },
+  { name: 'timesViewed', label: 'Times Viewed', field: 'timesViewed', sortable: false, },
 ]
 
 const rows = ref([])
