@@ -58,13 +58,16 @@ const dialog = (message, model = '') => new Promise((resolve) => {
   }).onOk(resolve)
 })
 const deleteVideo = async (row, b) => {
-  console.log('D>>', row, b)
   await confirm()
-  const res = await fetch(`/api/videos/${row.id}`, {
+  const { ok, message} = await fetch(`/api/videos/${row.id}`, {
     method: 'DELETE',
-  })
+  }).then(res => res.json())
+
+  if (ok === false) window.alert(message)
+
   await fetchVideos()
 }
+
 const editVideo = async (row) => {
   const newVideoName = await dialog('Enter new Name', row.name)
   const updatedModel = {
@@ -74,21 +77,23 @@ const editVideo = async (row) => {
   }
   delete updatedModel.id
 
-  await fetch(`/api/videos/${row.id}`, {
+  const { ok, message } = await fetch(`/api/videos/${row.id}`, {
     method: 'PUT',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(updatedModel)
-  })
+  }).then(res => res.json())
+
+  if (ok === false) window.alert(message)
 
   await fetchVideos()
 }
 const createVideo = async () => {
   const videoName = await dialog('What is your video name?')
 
-  await fetch('/api/videos', {
+  const { ok, message } = await fetch('/api/videos', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -101,7 +106,9 @@ const createVideo = async () => {
       isPrivate: true,
       timesViewed: 0
     })
-  })
+  }).then(res => res.json())
+
+  if (ok === false) window.alert(message)
 
   await fetchVideos()
 }

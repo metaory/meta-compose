@@ -24,10 +24,9 @@ app.use(async function(ctx, next) {
   const start = Date.now()
   try {
     await next()
+    ctx.body = { ok: true, ...ctx.body }
   } catch (error) {
-    console.error(error)
-    ctx.body = error.message
-    ctx.status = 500
+    ctx.body = { ok: false, message: error.message }
   }
   finally {
     const ms = Date.now() - start
@@ -73,7 +72,6 @@ router
     ctx.body = { total, length, list }
   })
   .post('/videos', async (ctx) => {
-    console.log('???', ctx.request.body)
     const { error, value } = await schema.validate(ctx.request.body)
     if (error) throw error
     ctx.body = await database('videos').insert(value)
