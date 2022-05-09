@@ -66,6 +66,7 @@ onMounted(() => {
         <h5 class="text-blue-grey-4 q-mr-sm">{{ length }}</h5>
         <h4 class="text-blue-grey">Videos</h4>
         <q-space />
+        <q-btn push disabled dark color="blue-grey" icon="add" class="q-mr-lg"/>
         <q-btn
           @click="fetchVideos(0, 0)"
           :loading="loading"
@@ -99,6 +100,7 @@ onMounted(() => {
           <q-th v-for="col in props.cols" :key="col.name" :props="props" class="text-cyan">
             <b>{{ col.label }}</b>
           </q-th>
+          <q-th class="text-cyan">actions</q-th>
         </q-tr>
       </template>
 
@@ -124,6 +126,12 @@ onMounted(() => {
               text-color="black"
               :color="props.row.timesViewed >= 42 ? 'positive' : 'warning'"
             >{{ String(props.row.timesViewed).padStart(2, '0') }}</q-badge>
+          </q-td>
+          <q-td>
+            <q-btn-group push>
+              <q-btn push disabled dark color="blue-grey" icon="edit" />
+              <q-btn push disabled dark color="blue-grey" icon="delete" />
+            </q-btn-group>
           </q-td>
         </q-tr>
       </template>
