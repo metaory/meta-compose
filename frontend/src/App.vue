@@ -31,7 +31,7 @@ const onRequest = async (props, minViews = 0, isPrivate) => {
 
   const params = new URLSearchParams()
   params.set('page', page)
-  rowsPerPage && params.set('per_page', rowsPerPage)
+  params.set('per_page', rowsPerPage || 9999)
   params.set('min_views', minViews)
 
   if (isPrivate !== undefined) params.set('is_private', isPrivate)
