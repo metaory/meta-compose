@@ -109,7 +109,7 @@ const initialPagination = {
   sortBy: 'desc',
   descending: false,
   page: 1,
-  rowsPerPage: 1000
+  rowsPerPage: 50
 }
 
 onMounted(() => {
@@ -125,7 +125,6 @@ onMounted(() => {
       color="cyan"
       dark
       bordered
-      hide-bottom
       row-key="id"
       :pagination="initialPagination"
       :rows="rows"
