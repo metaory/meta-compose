@@ -25,12 +25,12 @@ const pagination = ref({
   rowsNumber: 0
 })
 
-const onRequest = async (props, minViews = 0, isPrivate) => {
+const onRequest = async (props, minViews, isPrivate) => {
   const { page, rowsPerPage } = props.pagination
   loading.value = true
 
   const params = new URLSearchParams()
-  params.set('page', page)
+  params.set('page', minViews !== undefined ? 1 : page)
   params.set('per_page', rowsPerPage || 9999)
   params.set('min_views', minViews)
 
@@ -151,7 +151,7 @@ onMounted(() => {
         <q-space />
         <q-btn push @click="createVideo" round dark color="positive" icon="add" class="q-mr-lg" />
         <q-btn
-          @click="onRequest({pagination: pagination}, 0, 0)"
+          @click="onRequest({ pagination: pagination }, 0, 0)"
           :loading="loading"
           push
           rounded
@@ -159,7 +159,7 @@ onMounted(() => {
           label="Fetch Public Videos ONLY"
         />
         <q-btn
-          @click="onRequest({pagination: pagination}, 42)"
+          @click="onRequest({ pagination: pagination }, 42)"
           :loading="loading"
           push
           rounded
@@ -168,7 +168,7 @@ onMounted(() => {
           label="Fetch Popular Videos (42+)"
         />
         <q-btn
-          @click="onRequest({pagination: pagination}, 0)"
+          @click="onRequest({ pagination: pagination }, 0)"
           :loading="loading"
           push
           round
