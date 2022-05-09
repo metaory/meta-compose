@@ -11,7 +11,7 @@ const schema = Joi.object({
   url: Joi.string().uri().required(),
   thumbnailUrl: Joi.string().uri().required(),
   isPrivate: Joi.boolean().required(),
-  timesViewed: Joi.number().integer().valid(0).required(),
+  timesViewed: Joi.number().integer().required(),
 })
 
 const app = new Koa()
