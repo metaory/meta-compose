@@ -34,7 +34,32 @@ const fetchVideos = async (minViews = 0, isPrivate) => {
   rows.value = data.list
   loading.value = false
 }
+const deleteVideo = async (row, b) => {
+  console.log('D>>', row, b)
+  const res = await fetch(`/api/videos/${row.id}`, {
+    method: 'DELETE',
+  }).then(res => res.text()) // or res.json()
+  console.log('>>', res)
+  await fetchVideos()
+}
+const editVideo = async (id) => {
+  console.log('E>>', id)
+}
+const createVideo = async () => {
+  const formData = new FormData();
+  formData.append('name', 'name');
+  formData.append('url', 'url');
+  formData.append('thumbnailUrl', 'thumbnailUrl');
+  formData.append('isPrivate', true);
+  formData.append('timesViewed', 0);
 
+  await fetch('/api/videos', {
+    method: 'POST',
+    body: formData
+  }).then(response => response.json())
+
+  await fetchVideos()
+}
 const initialPagination = {
   sortBy: 'desc',
   descending: false,
@@ -66,7 +91,7 @@ onMounted(() => {
         <h5 class="text-blue-grey-4 q-mr-sm">{{ length }}</h5>
         <h4 class="text-blue-grey">Videos</h4>
         <q-space />
-        <q-btn push disabled dark color="blue-grey" icon="add" class="q-mr-lg"/>
+        <q-btn push disabled dark color="blue-grey" icon="add" class="q-mr-lg" />
         <q-btn
           @click="fetchVideos(0, 0)"
           :loading="loading"
@@ -129,8 +154,8 @@ onMounted(() => {
           </q-td>
           <q-td>
             <q-btn-group push>
-              <q-btn push disabled dark color="blue-grey" icon="edit" />
-              <q-btn push disabled dark color="blue-grey" icon="delete" />
+              <q-btn @click="editVideo(props.row)" push dark class="text-yellow" color="blue-grey-9" icon="edit" disabled />
+              <q-btn @click="deleteVideo(props.row)" push dark class="text-red" color="blue-grey-9" icon="delete" />
             </q-btn-group>
           </q-td>
         </q-tr>
