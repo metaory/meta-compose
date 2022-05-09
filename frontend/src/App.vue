@@ -48,6 +48,7 @@ const onRequest = async (props, minViews = 0, isPrivate) => {
   rows.value = data.list
   pagination.value.rowsNumber = data.total
   pagination.value.page = page
+  pagination.value.rowsPerPage = rowsPerPage
 
   loading.value = false
 }
