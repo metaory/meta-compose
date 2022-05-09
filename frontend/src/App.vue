@@ -116,7 +116,7 @@ const initialPagination = {
   sortBy: 'desc',
   descending: false,
   page: 1,
-  rowsPerPage: 50
+  rowsPerPage: 20
 }
 
 onMounted(() => {
