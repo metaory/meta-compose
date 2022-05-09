@@ -146,7 +146,7 @@ onMounted(() => {
       :loading="loading"
     >
       <template v-slot:top>
-        <h5 class="text-blue-grey-4 q-mr-sm">{{ length }}</h5>
+        <h5 class="text-blue-grey-4 q-mr-sm">{{ pagination.rowsNumber }}</h5>
         <h4 class="text-blue-grey">Videos</h4>
         <q-space />
         <q-btn push @click="createVideo" round dark color="positive" icon="add" class="q-mr-lg" />
