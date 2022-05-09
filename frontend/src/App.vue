@@ -25,8 +25,6 @@ const pagination = ref({
   rowsNumber: 0
 })
 
-const fetchVideos = async (minViews = 0, isPrivate) => {
-}
 const onRequest = async (props, minViews = 0, isPrivate) => {
   const { page, rowsPerPage } = props.pagination
   loading.value = true
@@ -79,7 +77,7 @@ const deleteVideo = async (row, b) => {
 
   if (ok === false) window.alert(message)
 
-  await fetchVideos()
+  await onRequest({ pagination: pagination.value })
 }
 
 const editVideo = async (row) => {
@@ -102,7 +100,7 @@ const editVideo = async (row) => {
 
   if (ok === false) window.alert(message)
 
-  await fetchVideos()
+  await onRequest({ pagination: pagination.value })
 }
 const createVideo = async () => {
   const videoName = await dialog('What is your video name?')
@@ -124,10 +122,9 @@ const createVideo = async () => {
 
   if (ok === false) window.alert(message)
 
-  await fetchVideos()
+  onRequest({ pagination: pagination.value })
 }
 onMounted(() => {
-  // fetchVideos()
   onRequest({ pagination: pagination.value })
 
 })
@@ -154,7 +151,7 @@ onMounted(() => {
         <q-space />
         <q-btn push @click="createVideo" round dark color="positive" icon="add" class="q-mr-lg" />
         <q-btn
-          @click="fetchVideos(0, 0)"
+          @click="onRequest({pagination: pagination}, 0, 0)"
           :loading="loading"
           push
           rounded
@@ -162,7 +159,7 @@ onMounted(() => {
           label="Fetch Public Videos ONLY"
         />
         <q-btn
-          @click="fetchVideos(42)"
+          @click="onRequest({pagination: pagination}, 42)"
           :loading="loading"
           push
           rounded
@@ -171,7 +168,7 @@ onMounted(() => {
           label="Fetch Popular Videos (42+)"
         />
         <q-btn
-          @click="fetchVideos(0)"
+          @click="onRequest({pagination: pagination}, 0)"
           :loading="loading"
           push
           round
