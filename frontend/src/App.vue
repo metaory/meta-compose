@@ -51,38 +51,38 @@ const deleteVideo = async (row, b) => {
   await confirm()
   const res = await fetch(`/api/videos/${row.id}`, {
     method: 'DELETE',
-  }).then(res => res.text()) // or res.json()
-  console.log('>>', res)
+  })
   await fetchVideos()
 }
 const editVideo = async (id) => {
   console.log('E>>', id)
 }
-const createVideo = async () => {
+const dialog = (message) => new Promise((resolve) => {
   $q.dialog({
     title: 'Prompt',
-    message: 'What is your name?',
-    prompt: {
-      model: '',
-      type: 'text' // optional
-    },
+    message,
+    prompt: { model: '', type: 'text' },
     cancel: true,
     persistent: true
-  }).onOk(data => {
-    console.log('>>>> OK, received', data)
-  })
-
-  const formData = new FormData();
-  formData.append('name', 'name');
-  formData.append('url', 'url');
-  formData.append('thumbnailUrl', 'thumbnailUrl');
-  formData.append('isPrivate', true);
-  formData.append('timesViewed', 0);
+  }).onOk(resolve)
+})
+const createVideo = async () => {
+  const videoName = await dialog('What is your video name?')
 
   await fetch('/api/videos', {
     method: 'POST',
-    body: formData
-  }).then(response => response.json())
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: videoName,
+      url: 'https://fake.com',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1651035157347-e92d6a3cd958?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=128&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY1MTk5MDMwMA&ixlib=rb-1.2.1&q=80&w=128',
+      isPrivate: true,
+      timesViewed: 0
+    })
+  })
 
   await fetchVideos()
 }

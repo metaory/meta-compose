@@ -73,6 +73,7 @@ router
     ctx.body = { total, length, list }
   })
   .post('/videos', async (ctx) => {
+    console.log('???', ctx.request.body)
     const { error, value } = await schema.validate(ctx.request.body)
     if (error) throw error
     ctx.body = await database('videos').insert(value)
