@@ -47,6 +47,16 @@ const confirm = () => new Promise((resolve) => {
     persistent: true
   }).onOk(resolve)
 })
+const dialog = (message, model = '') => new Promise((resolve) => {
+  $q.dialog({
+    title: 'Prompt',
+    dark: true,
+    message,
+    prompt: { model, type: 'text' },
+    cancel: true,
+    persistent: true
+  }).onOk(resolve)
+})
 const deleteVideo = async (row, b) => {
   console.log('D>>', row, b)
   await confirm()
@@ -55,19 +65,25 @@ const deleteVideo = async (row, b) => {
   })
   await fetchVideos()
 }
-const editVideo = async (id) => {
-  console.log('E>>', id)
+const editVideo = async (row) => {
+  console.log('E>>', row)
+  const newVideoName = await dialog('Enter new Name', row.name)
+  console.log('NEW NAME:::', newVideoName)
+
+  await fetch(`/api/videos/${row.id}`, {
+    method: 'PUT',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      ...row,
+      name: newVideoName,
+    })
+  })
+
+  await fetchVideos()
 }
-const dialog = (message) => new Promise((resolve) => {
-  $q.dialog({
-    title: 'Prompt',
-    dark: true,
-    message,
-    prompt: { model: '', type: 'text' },
-    cancel: true,
-    persistent: true
-  }).onOk(resolve)
-})
 const createVideo = async () => {
   const videoName = await dialog('What is your video name?')
 
@@ -189,7 +205,6 @@ onMounted(() => {
                 class="text-yellow"
                 color="blue-grey-9"
                 icon="edit"
-                disabled
               />
               <q-btn
                 @click="deleteVideo(props.row)"
