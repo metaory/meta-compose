@@ -136,7 +136,7 @@ onMounted(() => {
         <h5 class="text-blue-grey-4 q-mr-sm">{{ length }}</h5>
         <h4 class="text-blue-grey">Videos</h4>
         <q-space />
-        <q-btn push @click="createVideo" dark color="positive" icon="add" class="q-mr-lg" />
+        <q-btn push @click="createVideo" round dark color="positive" icon="add" class="q-mr-lg" />
         <q-btn
           @click="fetchVideos(0, 0)"
           :loading="loading"
