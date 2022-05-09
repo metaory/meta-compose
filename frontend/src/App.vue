@@ -41,6 +41,7 @@ const fetchVideos = async (minViews = 0, isPrivate) => {
 const confirm = () => new Promise((resolve) => {
   $q.dialog({
     title: 'Confirm',
+    dark: true,
     message: 'Are you sure?',
     cancel: true,
     persistent: true
@@ -60,6 +61,7 @@ const editVideo = async (id) => {
 const dialog = (message) => new Promise((resolve) => {
   $q.dialog({
     title: 'Prompt',
+    dark: true,
     message,
     prompt: { model: '', type: 'text' },
     cancel: true,
