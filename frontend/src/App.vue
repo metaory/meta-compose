@@ -23,7 +23,7 @@ const fetchVideos = async (minViews = 0, isPrivate) => {
 
   const params = new URLSearchParams()
   params.set('page', 1)
-  params.set('per_page', 1000)
+  params.set('per_page', 1100)
   params.set('min_views', minViews)
 
   if (isPrivate !== undefined) params.set('is_private', isPrivate)
