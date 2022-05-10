@@ -2,7 +2,7 @@ const knex = require('knex')
 const axios = require("axios")
 const { database } = require('./config')
 const chance = new (require('chance'))
-const length = 100
+const length = 1000
 
 const db = module.exports = knex({
   client: 'mysql2',
