@@ -28,7 +28,7 @@ curl --request GET \
 ```
 
 ## TODOs
-- client pagination
-- search feature
-- list sorting feature
+- [x] client pagination
+- [ ] search feature
+- [ ] list sorting feature
 
