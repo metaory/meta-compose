@@ -26,12 +26,12 @@ const pagination = ref({
 })
 
 const onRequest = async (props, minViews, isPrivate) => {
-  const { page, rowsPerPage } = props.pagination
+  const { page, rowsPerPage, rowsNumber } = props.pagination
   loading.value = true
 
   const params = new URLSearchParams()
   params.set('page', minViews !== undefined ? 1 : page)
-  params.set('per_page', rowsPerPage || 9999)
+  params.set('per_page', rowsPerPage || rowsNumber)
   params.set('min_views', minViews)
 
   if (isPrivate !== undefined) params.set('is_private', isPrivate)
