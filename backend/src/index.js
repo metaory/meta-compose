@@ -24,7 +24,9 @@ app.use(async function(ctx, next) {
   const start = Date.now()
   try {
     await next()
+    const status = ctx.status
     ctx.body = { ok: true, ...ctx.body }
+    ctx.status = status
   } catch (error) {
     ctx.body = { ok: false, message: error.message }
   }
