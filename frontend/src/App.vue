@@ -132,7 +132,7 @@ onMounted(() => {
 
 <template>
   <h1>metaory</h1>
-  <div class="q-ma-xl">
+  <div style="margin: 0 4vw;">
     <q-table
       title="Videos"
       color="cyan"
@@ -150,28 +150,30 @@ onMounted(() => {
         <h4 class="text-blue-grey">Videos</h4>
         <q-space />
         <q-btn push @click="createVideo" round dark color="positive" icon="add" class="q-mr-lg" />
+            <q-btn-group push>
         <q-btn
           @click="onRequest({ pagination: pagination }, 0, 0)"
           :loading="loading"
           push
           rounded
           color="primary"
-          label="Fetch Public Videos ONLY"
+          label="Fetch Public Videos"
         />
         <q-btn
           @click="onRequest({ pagination: pagination }, 42)"
           :loading="loading"
           push
           rounded
-          class="q-mx-xl"
           color="secondary"
           label="Fetch Popular Videos (42+)"
         />
+            </q-btn-group>
         <q-btn
           @click="onRequest({ pagination: pagination }, 0)"
           :loading="loading"
           push
           round
+          class="q-ml-lg"
           color="accent"
           dark
           icon="refresh"
