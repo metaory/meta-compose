@@ -65,7 +65,7 @@ router
     const list = await query
       .limit(per_page)
       .offset(offset)
-      .orderBy('id', 'desc')
+      .orderBy(min_views > 0 ? 'timesViewed' : 'id', 'desc')
 
     const { length } = list
 
