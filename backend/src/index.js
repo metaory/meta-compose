@@ -25,7 +25,7 @@ app.use(async function(ctx, next) {
   try {
     await next()
     const status = ctx.status
-    ctx.body = { ok: true, ...ctx.body }
+    ctx.body = { ok: status === 200, ...ctx.body }
     ctx.status = status
   } catch (error) {
     ctx.body = { ok: false, message: error.message }
